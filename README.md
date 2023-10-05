@@ -28,9 +28,10 @@ mkdir -p ~/amazon-kinesis-video-streams-producer-sdk-cpp/build
 cd ~/amazon-kinesis-video-streams-producer-sdk-cpp/build
 cmake -DBUILD_GSTREAMER_PLUGIN=ON ..
 ```
- ::::alert{type="info" header="Time Elapsed"}
-`cmake` may take about 5 to 10 minutes to complete.
-:::: 
+ <div class="alert alert-info">
+  <strong>Time Elapsed</strong>
+  <p>cmake may take about 5 to 10 minutes to complete.</p>
+</div>
 
  - As soon as the above commands have finished running, run the command below to complete building the SDK.
 
