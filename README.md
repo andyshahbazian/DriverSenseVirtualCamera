@@ -53,4 +53,6 @@ cmake -DBUILD_GSTREAMER_PLUGIN=ON ..
 make
 ```
   
-Now that you have set up Amazon Kinesis Video Streams Producer SDK C++, we can 
+Now that you have set up Amazon Kinesis Video Streams Producer SDK C++, we can proceed with streammaker 
+
+
