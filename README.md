@@ -1,5 +1,8 @@
 # DriverSenseVirtualCamera
-In response to the growing concern over driver drowsiness and distraction, the European Union has mandated that all new vehicles sold within its jurisdiction must be equipped with Driver Monitoring Systems (DMS). To advance the development of cloud-based DMS solutions, a workshop has been organized that will introduce a reference solution cloud architecture and utilize Amazon Web Services (AWS).
+
+Overview 
+
+To advance the development of cloud-based DMS (Driver Monitoring System) solutions, a fundamental requirement is the integration of an in-cabin camera to monitor the driver's level of alertness. For instance, detecting if the driver's head is tilting down due to drowsiness. Developers face the challenge of utilizing a camera to capture and analyze these events in real-time. Leveraging technologies like Kinesis Video Stream and Rekognition Live, this demands seamless access to live data. To facilitate this, we offer a simulator that continuously replays a video clip, simulating a live camera feed to provide real-time data. Additionally, we provide all the necessary provisioning and an integrated development environment (Cloud9) to ensure a quick and hassle-free setup process.
 
 ---
 title: 'Setup Kinesis Video Streamer'
