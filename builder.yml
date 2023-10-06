@@ -1,0 +1,178 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Cloud9 + QuickStart VPC (qs-1pb4pob92) (Please do not remove) May,29,2019
+Metadata:
+  LICENSE: Apache License, Version 2.0
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Cloud9 configuration
+        Parameters:
+          - C9InstanceType
+          - C9StopTime
+          - C9Subnet
+          - EBSVolumeSize
+          - BootstrapScriptS3Uri
+          - BootstrapArguments
+          - OwnerArn
+      - Label:
+          default: AWS Quick Start configuration
+        Parameters:
+          - OutputBucketName
+          - QSS3BucketName
+          - QSS3KeyPrefix
+          - UserScript  # Add UserScript parameter
+    ParameterLabels:
+      C9InstanceType:
+        default: Cloud9 instance type
+      C9StopTime:
+        default: Stop time
+      C9Subnet:
+        default: Public subnet ID
+      EBSVolumeSize:
+        default: EBS volume size
+      BootstrapScriptS3Uri:
+        default: Bootstrap script S3 URI
+      BootstrapArguments:
+        default: Bootstrap script arguments
+      OutputBucketName:
+        default: Output S3 bucket name
+      QSS3BucketName:
+        default: Quick Start S3 bucket name
+      QSS3KeyPrefix:
+        default: Quick Start S3 key prefix
+      UserScript:  # Add UserScript label
+        default: User script content  # Update with a suitable label
+Parameters:
+  C9InstanceType:
+    Description:
+      The instance type of the new Amazon EC2 instance that AWS Cloud9
+      will launch for the development environment.
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      # Add other allowed instance types
+  C9StopTime:
+    Description:
+      The number of minutes until the running instance is shut down after
+      the environment has last been used.
+    Type: Number
+    Default: 30
+  C9Subnet:
+    Description: The ID of the public subnet where your Cloud9 IDE will be installed.
+    Type: String
+  EBSVolumeSize:
+    Description: The desired size (GB) of the Amazon EBS volume for your Cloud9 IDE.
+    Type: Number
+    Default: 100
+  BootstrapScriptS3Uri:
+    Description: S3 URI to a shell script that will be executed on the Cloud9 instance. If left blank, no custom bootstrap will be run.
+    Type: String
+    Default: ''
+  BootstrapArguments:
+    Description: Arguments string to pass to the bootstrap script.
+    Type: String
+    Default: ''
+  OutputBucketName:
+    Description:
+      'OPTIONAL: Bucket name where the zip file output should be placed.
+      If left blank, a bucket name will be automatically generated.'
+    Type: String
+    Default: ''
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription:
+      Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: aws-quickstart
+    Description:
+      S3 bucket name for the Quick Start assets. This string can include
+      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
+      or end with a hyphen (-).
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/.]*$
+    ConstraintDescription:
+      Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), dots(.) and forward slash (/).
+    Default: quickstart-cloud9-ide/
+    Description:
+      S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), dots(.) and
+      forward slash (/).
+    Type: String
+  OwnerArn:
+    Description: 
+      The Amazon Resource Name (ARN) of the environment owner. This ARN can be the ARN of any AWS Identity and Access Management (IAM) principal. 
+      If this value is not specified, the ARN defaults to this stack's creator.
+    Type: String
+    Default: ''
+  UserScript:
+    Description: User script to run on the Cloud9 instance
+    Type: String
+    Default: |
+      cd
+      git clone https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp.git
+      mkdir -p ~/amazon-kinesis-video-streams-producer-sdk-cpp/build
+      cd ~/amazon-kinesis-video-streams-producer-sdk-cpp/build
+      cmake -DBUILD_GSTREAMER_PLUGIN=ON ..
+      make
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  CreateZipsBucket: !Equals [!Ref 'OutputBucketName', '']
+  DoCustomBootstrap: !Not [!Equals [!Ref 'BootstrapScriptS3Uri', '']]
+  DoOwnerArn: !Not [!Equals [!Ref 'OwnerArn', '']]
+Resources:
+  LambdaZipsBucket:
+    Condition: CreateZipsBucket
+    Type: AWS::S3::Bucket
+    Properties: {}
+  Cloud9Env:
+    Type: AWS::Cloud9::EnvironmentEC2
+    Properties:
+      Name: !Ref AWS::StackName
+      Description: !Sub '${AWS::AccountId}-${AWS::Region}-${AWS::StackName}'
+      AutomaticStopTimeMinutes: !Ref C9StopTime
+      InstanceType: !Ref C9InstanceType
+      SubnetId: !Ref C9Subnet
+      OwnerArn: !If [ DoOwnerArn, !Ref OwnerArn, !Ref 'AWS::NoValue']
+      UserData: !Base64
+        Fn::Sub: |
+          #!/bin/bash
+          ${UserScript}
+  Cloud9Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Path: /
+      Policies:
+        - PolicyName: get-bootstrap
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub 'arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*'
+        - PolicyName: describe-ec2
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  [
+                    'ec2:DescribeInstances',
+                    'ec2:DescribeVolumes',
+                    'ec2:ModifyVolume',
+                  ]
+                Resource: '*'
+...
