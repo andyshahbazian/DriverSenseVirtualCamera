@@ -69,9 +69,9 @@ weight: 21
  - For the environment type, select `New EC2 instance`
  - For the instance type, select `m5.large (8GiB RAM + 2vCPU)`
 
-::::alert{type="warning" header="Instance Type"}
+
 Please note that if you choose to use a t3 instance type you may run out of resources by the end of the workshop.
-::::
+
 
 - For the platform, select `Ubuntu Server 18.04 LTS`
 - For timeout, select `7 days`
@@ -81,9 +81,9 @@ Please note that if you choose to use a t3 instance type you may run out of reso
 ![setup-createenviro](https://github.com/andyshahbazian/DriverSenseVirtualCamera/assets/16087670/dd5cf0ed-b3b2-4d34-b54b-f80488c60a48)
 
 
-::::alert{type="info" header="VPC"}
+
 In VPC settings, select the default VPC. If the default VPC does not exist, create the VPC and subnet as follows. 
-::::
+
 
 ## Expand disk space ##
  - At the bottom of the screen, you will see `Admin:~/environment $` which is the Cloud9 (EC2) terminal
@@ -92,9 +92,9 @@ In VPC settings, select the default VPC. If the default VPC does not exist, crea
 
  - Once you execute the following commands in the Cloud9 terminal, it will expand the disk and restart the instance. 
 
-::::alert{type="info" header="Instance Type"}
+
 Please wait until the instance has restarted, as you will see `Connecting...` while the instance is restarting.
-::::
+
 
 ```bash
 wget https://awsj-iot-handson.s3-ap-northeast-1.amazonaws.com/kvs-workshop/resize_volume.sh	
@@ -127,15 +127,9 @@ sudo apt install -y \
   libgstreamer-plugins-base1.0-dev
 ```
 
-::::alert{type="info" header="You Did It!"}
+
 You have now successfully set up a Cloud9 environment.
-::::
 
-
----
-title: 'Obtain Credetials'
-weight: 22
----
 
 ## Obtain AWS Credentials
 
@@ -163,9 +157,9 @@ export AWS_SESSION_TOKEN=...
 
  - Use the AWS CLI to get temporary credentials to upload the video
 
-::::alert{type="info" header="Remember!"}
+
 Note that if you have not already set up the AWS CLI on  **the PC for operation**, follow the steps:  [Installing the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) and  [Configuring the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) .
-::::
+
 
  - In the terminal on the  **PC for operation,**  run the following commands
 
@@ -195,9 +189,9 @@ export AWS_SECRET_ACCESS_KEY="The SecretAccessKey value of the result above"
 export AWS_SESSION_TOKEN="The SessionToken value of the result above"
 ```
 
-::::alert{type="info" header="Real World Use Case"}
-In this workshop, the AWS CLI is used to get temporary credentials of the IAM user to simplify the procedure, but it is difficult to do this every time on a real camera device. In a real world use case, you can use a client certificate managed by AWS IoT to get the credentials.  [How to Eliminate the Need for Hardcoded AWS Credentials in Devices by Using the AWS IoT Credentials Provider](https://aws.amazon.com/jp/blogs/security/how-to-eliminate-the-need-for-hardcoded-aws-credentials-in-devices-by-using-the-aws-iot-credentials-provider/)
-::::
+
+Please note: he AWS CLI is used to get temporary credentials of the IAM user to simplify the procedure, but it is difficult to do this every time on a real camera device. In a real world use case, you can use a client certificate managed by AWS IoT to get the credentials.  [How to Eliminate the Need for Hardcoded AWS Credentials in Devices by Using the AWS IoT Credentials Provider](https://aws.amazon.com/jp/blogs/security/how-to-eliminate-the-need-for-hardcoded-aws-credentials-in-devices-by-using-the-aws-iot-credentials-provider/)
+
 
 --
 title : "Stream Maker"
@@ -214,9 +208,7 @@ In this step, run the Amazon Kinesis Video Streams Producer SDK C++ sample appli
     -   Video Stream Name:  `dms-stream`
     -   Select  `default configuration`
 
-::::alert{type="success" header="You Did It!"}
-The stream has been created.
-::::
+
 
 ## Download the video for playback
 
@@ -233,10 +225,7 @@ ls
 You should be able to see distracted.mp4 in the list of files, left click and test if you can open the video in cloud9. 
 
  - Instead of the sample video above, you can also use your own recorded video(1) 
- 
-::::alert{type="info" header="Remember!"}
-If you want to use your own video  Amazon Rekognition Video, will require H.264 as the encoded format
-::::
+
 
 ## Upload video
 
