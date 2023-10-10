@@ -43,10 +43,8 @@ AWS Cloud9 also supports **collaboration features** that allow developers to sha
 
 This makes it easy to develop, test, and deploy applications on the AWS Cloud.
 
----
-title: 'Setup Cloud 9'
-weight: 21
----
+##Setup Cloud 9##
+
  In this section, you will setup AWS Cloud9
 
  ## Verify the region ##
@@ -88,10 +86,7 @@ In VPC settings, select the default VPC. If the default VPC does not exist, crea
 ## Expand disk space ##
  - At the bottom of the screen, you will see `Admin:~/environment $` which is the Cloud9 (EC2) terminal
 
-![Setup - Expand Disk Space](/static/setup-expand.png)
-
  - Once you execute the following commands in the Cloud9 terminal, it will expand the disk and restart the instance. 
-
 
 Please wait until the instance has restarted, as you will see `Connecting...` while the instance is restarting.
 
