@@ -2,7 +2,6 @@
 # combined_script.sh
 
 # Step 1: Download and execute resize_volume.sh script
-wget https://awsj-iot-handson.s3-ap-northeast-1.amazonaws.com/kvs-workshop/resize_volume.sh
 chmod +x resize_volume.sh
 ./resize_volume.sh
 
